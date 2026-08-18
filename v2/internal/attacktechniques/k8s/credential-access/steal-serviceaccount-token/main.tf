@@ -19,12 +19,12 @@ locals {
   labels        = merge(local.base_labels, local.custom_labels)
 
   create_namespace  = var.config.kubernetes.namespace == ""
-  generated_ns_name = format("stratus-red-team-%s", random_string.suffix.result)
+  generated_ns_name = format("stratus-red-team-%s", var.correlation.short)
   namespace         = local.create_namespace ? local.generated_ns_name : var.config.kubernetes.namespace
 
   image = var.config.kubernetes.pod.image != "" ? var.config.kubernetes.pod.image : "public.ecr.aws/docker/library/alpine:3.15.0"
 
-  resource_prefix = "stratus-red-team-ssat" # stratus red team steal service account token
+  resource_prefix = "stratus-red-team-ssat-${var.correlation.short}" # stratus red team steal service account token
 }
 
 # Use ~/.kube/config as a configuration file if it exists (with current context).
@@ -32,11 +32,6 @@ locals {
 # see https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs#authentication
 provider "kubernetes" {
   config_path = fileexists(local.kubeconfig_path) ? local.kubeconfig_path : null
-}
-
-resource "random_string" "suffix" {
-  length    = 8
-  min_lower = 8
 }
 
 resource "kubernetes_namespace" "namespace" {

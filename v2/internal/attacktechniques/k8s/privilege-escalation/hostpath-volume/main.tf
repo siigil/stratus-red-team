@@ -10,7 +10,7 @@ terraform {
 locals {
   kubeconfig_path   = pathexpand("~/.kube/config")
   create_namespace  = var.config.kubernetes.namespace == ""
-  generated_ns_name = format("stratus-red-team-hpns-%s", random_string.suffix.result)
+  generated_ns_name = format("stratus-red-team-hpns-%s", var.correlation.short)
   namespace         = local.create_namespace ? local.generated_ns_name : var.config.kubernetes.namespace
 }
 
@@ -19,11 +19,6 @@ locals {
 # see https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs#authentication
 provider "kubernetes" {
   config_path = fileexists(local.kubeconfig_path) ? local.kubeconfig_path : null
-}
-
-resource "random_string" "suffix" {
-  length    = 4
-  min_lower = 4
 }
 
 resource "kubernetes_namespace" "namespace" {
@@ -40,6 +35,10 @@ resource "kubernetes_namespace" "namespace" {
 
 output "namespace" {
   value = local.namespace
+}
+
+output "warmup_short_id" {
+  value = var.correlation.short
 }
 
 output "display" {

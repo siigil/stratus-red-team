@@ -11,15 +11,10 @@ provider "azurerm" {
   features {}
 }
 
-resource "random_string" "suffix" {
-  length  = 6
-  special = false
-  upper   = false
-}
 
 locals {
   resource_prefix      = "stratusrt"
-  storage_account_name = "${local.resource_prefix}${random_string.suffix.result}"
+  storage_account_name = "${local.resource_prefix}${var.correlation.short}"
   num_files            = 51
   num_containers       = 5
   min_size_bytes       = 1
@@ -331,7 +326,7 @@ EOW
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "stratus-red-team-storage-deletion-rg-${random_string.suffix.result}"
+  name     = "stratus-red-team-storage-deletion-rg-${var.correlation.short}"
   location = "West US"
 }
 

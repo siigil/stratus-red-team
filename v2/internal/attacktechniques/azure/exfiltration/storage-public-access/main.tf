@@ -11,21 +11,16 @@ provider "azurerm" {
   features {}
 }
 
-resource "random_string" "suffix" {
-  length  = 4
-  special = false
-  upper   = false
-}
 
 locals {
   resource_prefix = "stratus-red-team-storage"
   # Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only
-  storage_account_name = "stratusredteam${random_string.suffix.result}"
+  storage_account_name = "stratusredteam${var.correlation.short}"
   container_name       = "private-data"
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "${local.resource_prefix}-storage-${random_string.suffix.result}"
+  name     = "${local.resource_prefix}-storage-${var.correlation.short}"
   location = "West US"
 }
 

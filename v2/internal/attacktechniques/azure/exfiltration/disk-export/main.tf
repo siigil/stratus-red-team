@@ -11,14 +11,9 @@ provider "azurerm" {
   features {}
 }
 
-resource "random_string" "suffix" {
-  length  = 4
-  special = false
-  upper   = false
-}
 
 resource "azurerm_resource_group" "rg" {
-  name     = "stratus-red-team-disk-export-rg-${random_string.suffix.result}"
+  name     = "stratus-red-team-disk-export-rg-${var.correlation.short}"
   location = "West US"
 }
 

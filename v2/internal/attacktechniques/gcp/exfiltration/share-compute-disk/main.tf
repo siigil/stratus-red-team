@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {
-  disk-name = "stratus-red-team-victim-disk"
+  disk-name = "stratus-red-team-victim-disk-${var.correlation.short}"
 }
 
 

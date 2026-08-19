@@ -14,11 +14,11 @@ provider "google" {
 }
 
 locals {
-  resource_prefix = "stratus-red-team-ep" # stratus red team enumerate permissions
+  resource_prefix = "srt-ep" # stratus red team enumerate permissions
 }
 
 resource "google_service_account" "sa" {
-  account_id   = "${local.resource_prefix}-sa"
+  account_id   = "${local.resource_prefix}-sa-${var.correlation.short}"
   display_name = "Stratus Red Team - Permission Enumeration"
   description  = "Service account used by Stratus Red Team for gcp.discovery.enumerate-permissions"
 }

@@ -9,14 +9,9 @@ terraform {
 
 data "google_compute_default_service_account" "default" {}
 
-resource "random_string" "suffix" {
-  length  = 6
-  special = false
-  upper   = false
-}
 
 resource "google_compute_instance" "target" {
-  name         = "stratus-red-team-csa-${random_string.suffix.result}"
+  name         = "stratus-red-team-csa-${var.correlation.short}"
   machine_type = "e2-micro"
   zone         = "us-east1-b"
 

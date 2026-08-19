@@ -15,19 +15,14 @@ locals {
   resource_prefix = "stratus-red-team-rvfl" # stratus red team remove vpc flow logs
 }
 
-resource "random_string" "suffix" {
-  length    = 8
-  special   = false
-  min_lower = 8
-}
 
 resource "google_compute_network" "vpc" {
-  name                    = "${local.resource_prefix}-vpc-${random_string.suffix.result}"
+  name                    = "${local.resource_prefix}-vpc-${var.correlation.short}"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "subnet" {
-  name          = "${local.resource_prefix}-subnet-${random_string.suffix.result}"
+  name          = "${local.resource_prefix}-subnet-${var.correlation.short}"
   ip_cidr_range = "10.10.0.0/24"
   region        = "us-central1"
   network       = google_compute_network.vpc.id

@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {
-  image-name = "stratus-red-team-victim-image"
+  image-name = "stratus-red-team-victim-image-${var.correlation.short}"
 }
 
 resource "google_compute_image" "this" {

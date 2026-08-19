@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-remove-flow-logs"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-remove-flow-logs-${var.correlation.short}"
 }
 
 resource "aws_vpc" "vpc" {

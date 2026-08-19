@@ -41,6 +41,10 @@ resource "kubernetes_pod" "pod" {
 
 The variable definition (in `pkg/stratus/config/config.tf`) provides defaults for all fields, so your Terraform code works with or without a user config file.
 
+!!! note "Prefix length limit"
+
+    AWS resources such as IAM users/roles, instance profiles, Lambda functions/layers and S3 buckets have name-length limits (63–64 characters). The `prefix` has a max length of 17 characters, to leave room for the resource name plus the short correlation ID (`var.correlation.short`, 8 characters). The `prefix` field does not support templating. When you write a technique that creates a length-limited resource, keep the technique's base name plus resource suffix short enough that a 17-char prefix and the 8-char correlation ID still fit within the resource's limit.
+
 ## In Go (for techniques that create resources at detonation time)
 
 For techniques that create resources in Go code (not Terraform), use `Apply[Resource]Config` (for K8S pod resources, it's `ApplyPodConfig`) to apply the user's configuration:

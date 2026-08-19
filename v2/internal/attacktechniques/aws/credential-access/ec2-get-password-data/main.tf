@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-ec2-get-password-data"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-ec2-get-pwd-${var.correlation.short}"
 }
 
 data "aws_caller_identity" "current" {}

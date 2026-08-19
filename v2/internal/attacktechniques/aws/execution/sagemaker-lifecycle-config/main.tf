@@ -21,13 +21,13 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-update-sagemaker-config-profile"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-sagemaker-${var.correlation.short}"
 }
 
 # --- 1. High-Privilege Target Role (The Goal of the Attack) ---
 
 resource "aws_iam_role" "high_priv_execution_role" {
-  name        = "${local.resource_prefix}-high-priv-role"
+  name        = "${local.resource_prefix}-hi-role"
   description = "Execution role for SageMaker instance. Target for privilege escalation."
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -98,7 +98,7 @@ resource "aws_iam_role_policy_attachment" "high_priv_attach" {
 # --- 2. Low-Privilege Attacker Role (The Enabler of the Attack) ---
 
 resource "aws_iam_role" "low_priv_attacker_role" {
-  name        = "${local.resource_prefix}-low-priv-role"
+  name        = "${local.resource_prefix}-lo-role"
   description = "Role with permissions to execute the SageMaker update attack."
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -153,7 +153,7 @@ resource "aws_iam_role_policy_attachment" "low_priv_attach" {
 # --- 3. SageMaker Notebook Instance (The Target) ---
 
 resource "aws_sagemaker_notebook_instance" "target_notebook" {
-  name          = "${local.resource_prefix}-vuln-notebook"
+  name          = "${local.resource_prefix}-vuln-vm"
   role_arn      = aws_iam_role.high_priv_execution_role.arn
   instance_type = "ml.t2.medium"
   # Set to skip root access to ensure only the role is the entry point

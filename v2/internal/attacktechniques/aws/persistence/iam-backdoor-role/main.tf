@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-backdoor-r"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-backdoor-r-${var.correlation.short}"
 }
 
 resource "aws_iam_role" "legit-role" {

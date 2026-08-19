@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-open-sg"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-open-sg-${var.correlation.short}"
 }
 
 resource "aws_vpc" "vpc" {

@@ -16,22 +16,17 @@ provider "aws" {
   }
 }
 
-resource "random_string" "suffix" {
-  length    = 10
-  min_lower = 10
-  special   = false
+
+locals {
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-dns-delete-${var.correlation.short}"
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-dns-delete"
-}
-
-locals {
-  bucket-name = "${local.resource_prefix}-bucket-${random_string.suffix.result}"
+  bucket-name = "${local.resource_prefix}-bucket"
 }
 
 resource "aws_route53_resolver_query_log_config" "config" {
-  name            = "${local.resource_prefix}-config-${random_string.suffix.result}"
+  name            = "${local.resource_prefix}-config"
   destination_arn = aws_s3_bucket.query_log.arn
 }
 

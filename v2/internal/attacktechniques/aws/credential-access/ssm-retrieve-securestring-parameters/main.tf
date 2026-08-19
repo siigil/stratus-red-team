@@ -19,7 +19,7 @@ provider "aws" {
 
 locals {
   num_parameters = 42 // arbitrary
-  prefix         = "/credentials/${var.config.aws.prefix}stratus-red-team/"
+  prefix         = "/credentials/${var.config.aws.prefix}stratus-red-team-${var.correlation.short}/"
 }
 
 resource "random_password" "secret" {

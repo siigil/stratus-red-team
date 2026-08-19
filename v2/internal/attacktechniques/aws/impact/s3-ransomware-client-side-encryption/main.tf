@@ -17,15 +17,10 @@ provider "aws" {
   }
 }
 
-resource "random_string" "suffix" {
-  length    = 6
-  min_lower = 6
-  special   = false
-}
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-ransomware-bucket"
-  bucket_name     = format("%s-%s", local.resource_prefix, random_string.suffix.result)
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-ransomware-bucket-${var.correlation.short}"
+  bucket_name     = local.resource_prefix
   num-files       = 51
   min-size-bytes  = 1
   max-size-bytes  = 200

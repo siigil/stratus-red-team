@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-ec2-serialconsole-ssh-lateral-movement"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-ec2-serialcon-${var.correlation.short}"
 }
 
 variable "instance_count" {
@@ -95,7 +95,7 @@ resource "aws_iam_role_policy_attachment" "rolepolicy" {
 }
 
 resource "aws_iam_instance_profile" "instance" {
-  name = "${local.resource_prefix}-instance"
+  name = "${local.resource_prefix}-inst"
   role = aws_iam_role.instance-role.name
 }
 

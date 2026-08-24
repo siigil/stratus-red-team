@@ -18,7 +18,7 @@ locals {
 // Create N service accounts
 resource "google_service_account" "service_account" {
   count       = local.num-service-accounts
-  account_id  = format("%s-sa-%s", local.resource_prefix, var.correlation.short)
+  account_id  = format("%s-sa-%s-%d", local.resource_prefix, var.correlation.short, count.index)
   description = "Service account used by Stratus Red Team for gcp.privilege-escalation.impersonate-service-accounts"
 }
 

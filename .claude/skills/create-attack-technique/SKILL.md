@@ -10,10 +10,12 @@ description: >
 ## Overview
 
 Each attack technique is composed of two files, which should be stored in `v2/internal/attacktechniques/<platform>/<mitre-attack-tactic>/<name>` (e.g., `v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-delete/`):
+
 - `main.go`, containing the imperative attack logic
 - most of the time, `main.tf` containing prerequisite infrastructure.
 
 The lifecycle of an attack technique in Stratus Red Team is:
+
 - COLD
 - WARM: The prerequisite infrastructure is ready.
 - DETONATED: The attack technique was detonated.
@@ -55,12 +57,6 @@ resource "aws_iam_role" "role" {
   name = "${local.resource_prefix}-role"
 }
 ```
-
-Do **not** use `random_string` for name uniqueness — use `var.correlation.short` instead. Content-only randoms (secret values, ransomware fake-file content) are fine.
-
-For AWS techniques that use `var.config.aws.prefix`, the prefix is schema-validated to a maximum of 17 characters (see `config.schema.json`). Keep the technique's base name plus resource suffix short enough that a 17-char prefix, the 8-char `var.correlation.short`, and the suffix all fit within the provider's name-length limit (64 chars for IAM/Lambda, 63 for S3). See [docs/dev-guide/configuration.md](../../../docs/dev-guide/configuration.md) for details.
-
-For resources scoped under an already-uniquely-named parent (e.g. a K8s namespace that already carries `var.correlation.short`), the child resources do not need their own suffix — the parent's uniqueness isolates them.
 
 #### Go-created detonation artifacts
 
@@ -126,11 +122,11 @@ If the detonation is reversible, implement a `revert` function that undoes the c
 
 #### Guideline for documentation fields
 
-* `ID` should always be of the form `platform.mitre-attack-tactic.name`, e.g. `aws.defense-evasion.cloudtrail-delete`
-* `FriendlyName` should always start with a verb, and be in the infinitive form.
-  * Bad: `S3 ransomware`, `Creates S3 ransomware`
-  * Good: `Simulate S3 ransomware`
-* `Description` should contain at least an intro sentence and a Warm-up, Detonation, References section. "References" should ideally be examples of usage/sightings of this technique in the wild, or relevant cloud provider documentation. Example:
+- `ID` should always be of the form `platform.mitre-attack-tactic.name`, e.g. `aws.defense-evasion.cloudtrail-delete`
+- `FriendlyName` should always start with a verb, and be in the infinitive form.
+  - Bad: `S3 ransomware`, `Creates S3 ransomware`
+  - Good: `Simulate S3 ransomware`
+- `Description` should contain at least an intro sentence and a Warm-up, Detonation, References section. "References" should ideally be examples of usage/sightings of this technique in the wild, or relevant cloud provider documentation. Example:
 
 ```
 Establishes persistence by creating a service account key on an existing service account.
@@ -149,7 +145,7 @@ References:
 - https://rhinosecuritylabs.com/gcp/privilege-escalation-google-cloud-platform-part-1/
 ```
 
-* `Detection` should describe how to detect this technique, including relevant CloudTrail/audit log event names and any managed detection rules (e.g. GuardDuty finding types). Use HTML for formatting since it renders in the docs. Example:
+- `Detection` should describe how to detect this technique, including relevant CloudTrail/audit log event names and any managed detection rules (e.g. GuardDuty finding types). Use HTML for formatting since it renders in the docs. Example:
 
 ```
 Identify when a CloudTrail trail is disabled, through CloudTrail's <code>StopLogging</code> event.
@@ -157,7 +153,7 @@ Identify when a CloudTrail trail is disabled, through CloudTrail's <code>StopLog
 GuardDuty also provides a dedicated finding type, <a href="https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#stealth-iam-cloudtrailloggingdisabled">Stealth:IAMUser/CloudTrailLoggingDisabled</a>.
 ```
 
-* `IsIdempotent`: set to `true` if the detonation can be called multiple times without side effects.
+- `IsIdempotent`: set to `true` if the detonation can be called multiple times without side effects.
 
 #### Add your new Go file to the imported attack techniques
 

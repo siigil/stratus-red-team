@@ -37,6 +37,51 @@ When **creating** a new technique, follow the workflow below step by step. When 
 
 See [references/provider-configs.md](references/provider-configs.md) for the required Terraform provider blocks for each platform (AWS, Azure, Entra ID, GCP, Kubernetes).
 
+#### Concurrent detonation: use var.correlation.short in resource names
+
+A `variable "correlation"` block is **automatically injected** alongside your `main.tf` at warmup time — you do not need to declare it. It provides:
+
+- `var.correlation.id` — the full correlation UUID (used in tags/labels for signal matching)
+- `var.correlation.short` — an 8-character short form, safe to embed in resource names
+
+**Every resource with a globally or region-scoped name must embed `var.correlation.short`** so that concurrent executions of the same technique do not collide. The standard pattern is:
+
+```hcl
+locals {
+  resource_prefix = "stratus-red-team-<technique-name>-${var.correlation.short}"
+}
+
+resource "aws_iam_role" "role" {
+  name = "${local.resource_prefix}-role"
+}
+```
+
+Do **not** use `random_string` for name uniqueness — use `var.correlation.short` instead. Content-only randoms (secret values, ransomware fake-file content) are fine.
+
+For AWS techniques that use `var.config.aws.prefix`, the prefix is schema-validated to a maximum of 17 characters (see `config.schema.json`). Keep the technique's base name plus resource suffix short enough that a 17-char prefix, the 8-char `var.correlation.short`, and the suffix all fit within the provider's name-length limit (64 chars for IAM/Lambda, 63 for S3). See [docs/dev-guide/configuration.md](../../../docs/dev-guide/configuration.md) for details.
+
+For resources scoped under an already-uniquely-named parent (e.g. a K8s namespace that already carries `var.correlation.short`), the child resources do not need their own suffix — the parent's uniqueness isolates them.
+
+#### Go-created detonation artifacts
+
+If the technique creates resources **in Go** (not Terraform) during `detonate`, their names must also carry the correlation short ID. Since the Go code cannot access `var.correlation.short` directly, expose it as a Terraform output and read it from `params`:
+
+```hcl
+output "warmup_short_id" {
+  value = var.correlation.short
+}
+```
+
+```go
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
+    shortID := params["warmup_short_id"]
+    resourceName := fmt.Sprintf("my-technique-%s", shortID)
+    // ...
+}
+```
+
+This value is persisted at warmup and read back at detonate/revert, so it stays stable across commands even when no correlation ID is set.
+
 When you're done, format your Terraform file using:
 
 ```bash

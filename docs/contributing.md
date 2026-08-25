@@ -10,7 +10,7 @@ To create a new attack technique:
 
 1. Create a new folder under `v2/internal/attacktechniques/your-cloud/your-mitre-attack-tactic/your-attack-name`
 2. Create a `main.go` file that contains the detonation (and optionally, the revert) behavior. See for example [cloudtrail-stop/main.go](https://github.com/DataDog/stratus-red-team/blob/main/v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-stop/main.go)
-3. If your attack technique contains pre-requisites, create a `main.tf` file
+3. If your attack technique contains pre-requisites, create a `main.tf` file. **All resource names must embed `var.correlation.short`** so concurrent executions don't collide — see the `create-attack-technique` skill for details.
 4. Add your attack technique to the imports of `v2/internal/attacktechniques/main.go`
 
 To generate the logs dataset using [Grimoire](https://github.com/DataDog/grimoire):

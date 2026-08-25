@@ -2,6 +2,8 @@
 
 Use the following provider blocks depending on the target platform.
 
+A `variable "correlation"` block is **automatically injected** alongside every technique's `main.tf` at warmup time — do not declare it yourself. It provides `var.correlation.id` (full UUID) and `var.correlation.short` (8-char short form). Embed `var.correlation.short` in all resource names for concurrent-detonation support. See the `create-attack-technique` skill for details.
+
 ## AWS / EKS
 
 ```hcl

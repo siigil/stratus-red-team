@@ -18,11 +18,11 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-lambda-layer"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-lambda-layer-${var.correlation.short}"
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name = "${local.resource_prefix}-lambda-role"
+  name = "${local.resource_prefix}-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -68,14 +68,9 @@ resource "aws_iam_role_policy_attachment" "lambda_logs_attach" {
 }
 
 
-resource "random_string" "suffix" {
-  length    = 6
-  min_lower = 6
-  special   = false
-}
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "${local.resource_prefix}-${random_string.suffix.result}"
+  bucket        = local.resource_prefix
   force_destroy = true
 }
 
@@ -88,9 +83,9 @@ resource "aws_s3_bucket_object" "code" {
 resource "aws_lambda_function" "lambda" {
   s3_bucket     = aws_s3_bucket.bucket.id
   s3_key        = aws_s3_bucket_object.code.key
-  function_name = "${local.resource_prefix}-simpleLambda"
+  function_name = "${local.resource_prefix}-fn"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "${local.resource_prefix}-simpleLambda.handler"
+  handler       = "${local.resource_prefix}-fn.handler"
   timeout       = 20
 
   runtime = "python3.10"
@@ -107,7 +102,7 @@ resource "aws_s3_bucket_object" "code_layer" {
 resource "aws_lambda_layer_version" "lambda_extension_layer" {
   s3_bucket  = aws_s3_bucket.bucket.id
   s3_key     = aws_s3_bucket_object.code_layer.key
-  layer_name = "${local.resource_prefix}-my-lambda-extension"
+  layer_name = "${local.resource_prefix}-ext"
 
   compatible_runtimes = ["python3.10"]
 }

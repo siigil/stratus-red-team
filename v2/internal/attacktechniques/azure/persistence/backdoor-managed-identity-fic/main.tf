@@ -18,21 +18,16 @@ provider "azurerm" {
 data "azuread_client_config" "current" {}
 data "azurerm_subscription" "current" {}
 
-resource "random_string" "suffix" {
-  length  = 4
-  special = false
-  upper   = false
-}
 
 # Resource group for the OIDC storage account
 resource "azurerm_resource_group" "oidc" {
-  name     = "stratus-fic-mi-${random_string.suffix.result}"
+  name     = "stratus-fic-mi-${var.correlation.short}"
   location = "westus"
 }
 
 # Victim user-assigned managed identity
 resource "azurerm_user_assigned_identity" "victim" {
-  name                = "stratus-victim-mi-${random_string.suffix.result}"
+  name                = "stratus-victim-mi-${var.correlation.short}"
   resource_group_name = azurerm_resource_group.oidc.name
   location            = azurerm_resource_group.oidc.location
 }
@@ -49,7 +44,7 @@ resource "azuread_directory_role_assignment" "role" {
 
 # Storage account to host the malicious OIDC provider metadata
 resource "azurerm_storage_account" "oidc" {
-  name                            = "stratusficmi${random_string.suffix.result}"
+  name                            = "stratusficmi${var.correlation.short}"
   resource_group_name             = azurerm_resource_group.oidc.name
   location                        = azurerm_resource_group.oidc.location
   account_tier                    = "Standard"
@@ -86,7 +81,7 @@ output "blob_service_url" {
 }
 
 output "random_suffix" {
-  value = random_string.suffix.result
+  value = var.correlation.short
 }
 
 output "display" {

@@ -2,6 +2,8 @@
 
 Use the following provider blocks depending on the target platform.
 
+A `variable "correlation"` block is **automatically injected** alongside every technique's `main.tf` at warmup time — do not declare it yourself. It provides `var.correlation.id` (full UUID) and `var.correlation.short` (8-char short form). Embed `var.correlation.short` in all resource names for concurrent-detonation support. See the `create-attack-technique` skill for details.
+
 ## AWS / EKS
 
 ```hcl
@@ -24,6 +26,8 @@ provider "aws" {
   }
 }
 ```
+
+For AWS techniques that use `var.config.aws.prefix`, the prefix is schema-validated to a maximum of 17 characters (see `config.schema.json`). Keep the technique's base name plus resource suffix short enough that a 17-char prefix, the 8-char `var.correlation.short`, and the suffix all fit within the provider's name-length limit (64 chars for IAM/Lambda, 63 for S3). See [docs/dev-guide/configuration.md](../../../../docs/dev-guide/configuration.md) for details.
 
 ## Azure
 

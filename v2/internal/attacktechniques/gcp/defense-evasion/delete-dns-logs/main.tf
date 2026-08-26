@@ -15,14 +15,9 @@ locals {
   resource_prefix = "stratus-red-team-ddl" # stratus red team delete dns logs
 }
 
-resource "random_string" "suffix" {
-  length    = 8
-  special   = false
-  min_lower = 8
-}
 
 resource "google_dns_policy" "logging_policy" {
-  name           = "${local.resource_prefix}-policy-${random_string.suffix.result}"
+  name           = "${local.resource_prefix}-policy-${var.correlation.short}"
   enable_logging = true
 
   networks {
@@ -31,7 +26,7 @@ resource "google_dns_policy" "logging_policy" {
 }
 
 resource "google_compute_network" "vpc" {
-  name                    = "${local.resource_prefix}-vpc-${random_string.suffix.result}"
+  name                    = "${local.resource_prefix}-vpc-${var.correlation.short}"
   auto_create_subnetworks = false
 }
 

@@ -19,11 +19,6 @@ locals {
   domain_name     = data.azuread_domains.default.domains.0.domain_name
 }
 
-resource "random_string" "suffix" {
-  length  = 4
-  special = false
-  upper   = false
-}
 
 resource "random_password" "password" {
   length           = 64
@@ -38,11 +33,11 @@ resource "random_password" "password" {
 resource "azuread_user" "target" {
   user_principal_name = format(
     "%s@%s",
-    "stratus-red-team-hidden-au-target-${random_string.suffix.result}",
+    "stratus-red-team-hidden-au-target-${var.correlation.short}",
     local.domain_name
   )
   password     = random_password.password.result
-  display_name = "Stratus Target User - ${random_string.suffix.result}"
+  display_name = "Stratus Target User - ${var.correlation.short}"
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -80,7 +75,7 @@ output "paa_role_id" {
 }
 
 output "suffix" {
-  value = random_string.suffix.result
+  value = var.correlation.short
 }
 
 output "domain" {

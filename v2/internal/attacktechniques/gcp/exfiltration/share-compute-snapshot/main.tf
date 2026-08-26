@@ -8,8 +8,8 @@ terraform {
 }
 
 locals {
-  disk-name     = "stratus-red-team-victim-disk"
-  snapshot-name = "stratus-red-team-victim-snapshot"
+  disk-name     = "stratus-red-team-victim-disk-${var.correlation.short}"
+  snapshot-name = "stratus-red-team-victim-snapshot-${var.correlation.short}"
   zone          = "us-central1-a"
 }
 

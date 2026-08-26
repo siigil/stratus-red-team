@@ -11,27 +11,17 @@ provider "azurerm" {
   features {}
 }
 
-resource "random_string" "suffix" {
-  length  = 6
-  special = false
-  upper   = false
-}
 
-resource "random_string" "keyvault_suffix" {
-  length  = 8
-  special = false
-  upper   = false
-}
 
 locals {
   resource_prefix      = "stratusrt"
-  storage_account_name = "${local.resource_prefix}${random_string.suffix.result}"
-  key_vault_name       = "${local.resource_prefix}${random_string.keyvault_suffix.result}"
+  storage_account_name = "${local.resource_prefix}${var.correlation.short}"
+  key_vault_name       = "${local.resource_prefix}${var.correlation.short}"
   num_containers       = 5
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "stratus-red-team-blob-encryption-rg-${random_string.suffix.result}"
+  name     = "stratus-red-team-blob-encryption-rg-${var.correlation.short}"
   location = "West US"
 }
 

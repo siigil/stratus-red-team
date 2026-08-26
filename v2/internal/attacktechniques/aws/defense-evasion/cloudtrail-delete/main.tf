@@ -17,22 +17,17 @@ provider "aws" {
   }
 }
 
-resource "random_string" "suffix" {
-  length    = 10
-  min_lower = 10
-  special   = false
+
+locals {
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-cloudtraild-${var.correlation.short}"
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-cloudtraild"
-}
-
-locals {
-  bucket-name = "${local.resource_prefix}-bucket-${random_string.suffix.result}"
+  bucket-name = "${local.resource_prefix}-bucket"
 }
 
 resource "aws_cloudtrail" "trail" {
-  name           = "${local.resource_prefix}-trail-${random_string.suffix.result}"
+  name           = "${local.resource_prefix}-trail"
   s3_bucket_name = aws_s3_bucket.cloudtrail.id
 }
 

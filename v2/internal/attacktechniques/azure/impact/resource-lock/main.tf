@@ -12,21 +12,16 @@ provider "azurerm" {
   storage_use_azuread = true
 }
 
-resource "random_string" "suffix" {
-  length  = 4
-  special = false
-  upper   = false
-}
 
 locals {
   resource_prefix = "stratus-red-team-lock"
   # Storage account names must be between 3 and 24 characters in length and use numbers and lower-case letters only
-  storage_account_name = "stratusredteam${random_string.suffix.result}"
+  storage_account_name = "stratusredteam${var.correlation.short}"
   container_name       = "private-data"
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "${local.resource_prefix}-storage-${random_string.suffix.result}"
+  name     = "${local.resource_prefix}-storage-${var.correlation.short}"
   location = "West US"
 }
 
@@ -40,7 +35,7 @@ resource "azurerm_storage_account" "storage" {
 
 # Resource lock must be Resource Group level to prevent destruction race conditions
 resource "azurerm_management_lock" "rg_lock" {
-  name       = "stratus-storage-lock-${random_string.suffix.result}"
+  name       = "stratus-storage-lock-${var.correlation.short}"
   scope      = azurerm_resource_group.rg.id
   lock_level = "ReadOnly"
   notes      = "Stratus Storage resource lock"

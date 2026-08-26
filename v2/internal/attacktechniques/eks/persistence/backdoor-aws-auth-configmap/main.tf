@@ -13,7 +13,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "stratus-red-team-eks-backdoor-aws-auth"
+  resource_prefix = "stratus-red-team-eks-baa-${var.correlation.short}"
 }
 
 data "aws_caller_identity" "current" {}

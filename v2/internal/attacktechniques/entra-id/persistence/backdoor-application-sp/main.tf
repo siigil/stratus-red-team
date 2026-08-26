@@ -7,14 +7,9 @@ terraform {
   }
 }
 
-resource "random_string" "suffix" {
-  length  = 4
-  special = false
-  upper   = false
-}
 
 resource "azuread_application" "app" {
-  display_name = "Stratus Red Team sample application ${random_string.suffix.result}"
+  display_name = "Stratus Red Team sample application ${var.correlation.short}"
 }
 
 resource "azuread_service_principal" "sp" {

@@ -10,11 +10,11 @@ terraform {
 data "google_project" "current" {}
 
 locals {
-  resource_prefix = "stratus-red-team-bip" # stratus red team backdoor iam policy
+  resource_prefix = "srt-bip" # stratus red team backdoor iam policy
 }
 
 resource "google_service_account" "service_account" {
-  account_id = format("%s-sa", local.resource_prefix)
+  account_id = format("%s-sa-%s", local.resource_prefix, var.correlation.short)
 }
 
 resource "google_project_iam_member" "binding" {

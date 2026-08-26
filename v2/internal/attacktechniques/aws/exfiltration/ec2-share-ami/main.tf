@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-share-ami"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-share-ami-${var.correlation.short}"
 }
 
 data "aws_availability_zones" "available" {

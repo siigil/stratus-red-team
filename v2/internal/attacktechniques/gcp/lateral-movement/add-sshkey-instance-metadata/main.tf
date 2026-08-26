@@ -20,31 +20,26 @@ locals {
   image           = "debian-cloud/debian-11"
 }
 
-resource "random_string" "suffix" {
-  special   = false
-  length    = 16
-  min_lower = 16
-}
 
 data "google_compute_zones" "available" {
   region = local.region
 }
 
 resource "google_compute_network" "network" {
-  name                    = "${local.resource_prefix}-vpc-${random_string.suffix.result}"
+  name                    = "${local.resource_prefix}-vpc-${var.correlation.short}"
   routing_mode            = "REGIONAL"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "subnet" {
-  name          = "${local.resource_prefix}-subnet-${random_string.suffix.result}"
+  name          = "${local.resource_prefix}-subnet-${var.correlation.short}"
   ip_cidr_range = "10.10.1.0/24"
   network       = google_compute_network.network.id
   region        = local.region
 }
 
 resource "google_compute_firewall" "firewall" {
-  name    = "${local.resource_prefix}-firewall-${random_string.suffix.result}"
+  name    = "${local.resource_prefix}-firewall-${var.correlation.short}"
   network = google_compute_network.network.id
   allow {
     protocol = "tcp"
@@ -55,10 +50,10 @@ resource "google_compute_firewall" "firewall" {
 }
 
 resource "google_compute_instance" "target" {
-  name         = "${local.resource_prefix}-vm-${random_string.suffix.result}"
+  name         = "${local.resource_prefix}-vm-${var.correlation.short}"
   machine_type = local.instance_type
   zone         = data.google_compute_zones.available.names[0]
-  hostname     = "target-${random_string.suffix.result}.stratus.local"
+  hostname     = "target-${var.correlation.short}.stratus.local"
   tags         = ["ssh-access"]
 
   boot_disk {

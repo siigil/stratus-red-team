@@ -238,6 +238,9 @@ For AWS techniques, it allows you to:
 
 - **Add custom tags** to Terraform-managed prerequisites supported by the AWS provider's `default_tags`
 - **Prefix resource names** with a service-compatible value, including through templating
+!!! note "Prefix length limit"
+
+    Some AWS resources have tight name-length limits (e.g. IAM users/roles and Lambda functions are capped at 64 characters, S3 buckets at 63). To guarantee that the names won't overflow once the various identifiers are added, the `prefix` is limited to **17** characters.
 
 !!! warning
 

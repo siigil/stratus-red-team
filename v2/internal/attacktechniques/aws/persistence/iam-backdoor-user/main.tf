@@ -18,11 +18,11 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-backdoor-u"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-backdoor-${var.correlation.short}"
 }
 
 resource "aws_iam_user" "legit-user" {
-  name          = "${local.resource_prefix}-user" # TODO parametrize
+  name          = "${local.resource_prefix}-usr" # TODO parametrize
   force_destroy = true
 }
 

@@ -25,7 +25,7 @@ resource "random_string" "secrets" {
 
 resource "google_secret_manager_secret" "secrets" {
   count     = local.num_secrets
-  secret_id = "${local.resource_prefix}-${count.index}"
+  secret_id = "${local.resource_prefix}-${count.index}-${var.correlation.short}"
   replication {
     auto {}
   }

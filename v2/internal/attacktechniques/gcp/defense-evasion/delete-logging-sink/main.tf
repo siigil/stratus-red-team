@@ -15,20 +15,15 @@ locals {
   resource_prefix = "stratus-red-team-dls" # stratus red team delete logging sink
 }
 
-resource "random_string" "suffix" {
-  length    = 8
-  special   = false
-  min_lower = 8
-}
 
 resource "google_storage_bucket" "log_bucket" {
-  name          = "${local.resource_prefix}-bucket-${random_string.suffix.result}"
+  name          = "${local.resource_prefix}-bucket-${var.correlation.short}"
   location      = "US"
   force_destroy = true
 }
 
 resource "google_logging_project_sink" "audit_sink" {
-  name        = "${local.resource_prefix}-sink-${random_string.suffix.result}"
+  name        = "${local.resource_prefix}-sink-${var.correlation.short}"
   destination = "storage.googleapis.com/${google_storage_bucket.log_bucket.name}"
   filter      = "logName:\"cloudaudit.googleapis.com\""
 

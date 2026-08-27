@@ -42,7 +42,7 @@ Before running this technique, you will need to create an SP as a Global Adminis
 - EntitlementManagement.ReadWrite.All
 - Group.ReadWrite.All
 - User.ReadWrite.All
-- RoleAssignmentSchedule.ReadWrite.Directory
+- RoleManagement.ReadWrite.Directory
 3. Select "Grant consent for [Directory Name]" to consent to all permissions
 4. [Add a secret](https://learn.microsoft.com/en-us/entra/identity-platform/how-to-add-credentials?tabs=client-secret) to the application
 5. Log the Azure CLI out of your current user account:

@@ -24,7 +24,7 @@ resource "random_password" "password" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-share-snap"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-share-snap-${var.correlation.short}"
 }
 
 data "aws_availability_zones" "available" {

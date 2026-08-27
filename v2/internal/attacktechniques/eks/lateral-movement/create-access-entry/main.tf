@@ -13,7 +13,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "stratus-red-team-eks-create-access-entry"
+  resource_prefix = "stratus-red-team-eks-cae-${var.correlation.short}"
 }
 
 data "aws_caller_identity" "current" {}

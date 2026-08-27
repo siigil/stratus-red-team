@@ -12,25 +12,20 @@ provider "azurerm" {
 
 }
 
-resource "random_string" "suffix" {
-  length  = 6
-  special = false
-  upper   = false
-}
 
 resource "azurerm_resource_group" "rg" {
-  name     = "stratus-red-team-foundry-rg-${random_string.suffix.result}"
+  name     = "stratus-red-team-foundry-rg-${var.correlation.short}"
   location = "West US"
 }
 
 resource "azurerm_cognitive_account" "foundry" {
-  name                  = "stratus-rt-${random_string.suffix.result}"
+  name                  = "stratus-rt-${var.correlation.short}"
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   kind                  = "AIServices"
   sku_name              = "S0"
   local_auth_enabled    = false
-  custom_subdomain_name = "stratus-rt-${random_string.suffix.result}"
+  custom_subdomain_name = "stratus-rt-${var.correlation.short}"
 }
 
 output "cognitive_account_name" {

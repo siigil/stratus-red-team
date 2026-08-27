@@ -15,19 +15,14 @@ locals {
   resource_prefix = "stratus-red-team-mvns" # modify vertex notebook startup
 }
 
-resource "random_string" "suffix" {
-  length    = 8
-  special   = false
-  min_lower = 8
-}
 
 resource "google_compute_network" "vpc" {
-  name                    = "${local.resource_prefix}-vpc-${random_string.suffix.result}"
+  name                    = "${local.resource_prefix}-vpc-${var.correlation.short}"
   auto_create_subnetworks = true
 }
 
 resource "google_workbench_instance" "notebook" {
-  name     = "${local.resource_prefix}-${random_string.suffix.result}"
+  name     = "${local.resource_prefix}-${var.correlation.short}"
   location = "us-central1-a"
 
   gce_setup {

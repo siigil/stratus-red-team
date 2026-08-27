@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-remove-flow-logs"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-remove-flow-logs-${var.correlation.short}"
 }
 
 resource "aws_vpc" "vpc" {
@@ -33,7 +33,7 @@ resource "aws_flow_log" "flow-logs" {
 }
 
 resource "aws_cloudwatch_log_group" "logs" {
-  name = "/${var.config.aws.prefix}stratus-red-team/vpc-flow-logs"
+  name = "/${local.resource_prefix}/vpc-flow-logs"
 }
 
 resource "aws_iam_role" "role" {

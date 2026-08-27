@@ -19,18 +19,13 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-resource "random_string" "suffix" {
-  length    = 10
-  min_lower = 10
-  special   = false
-}
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-ec2lui" # ec2 launch unusual instance
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-ec2lui-${var.correlation.short}" # ec2 launch unusual instance
 }
 
 resource "aws_iam_role" "role" {
-  name = "${local.resource_prefix}-role-${random_string.suffix.result}"
+  name = "${local.resource_prefix}-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -47,7 +42,7 @@ resource "aws_iam_role" "role" {
 }
 
 resource "aws_iam_policy" "policy" {
-  name = "${local.resource_prefix}-policy-${random_string.suffix.result}"
+  name = "${local.resource_prefix}-policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -61,7 +56,7 @@ resource "aws_iam_policy" "policy" {
 }
 
 resource "aws_iam_policy_attachment" "attachment" {
-  name       = "${local.resource_prefix}-attachment-${random_string.suffix.result}"
+  name       = "${local.resource_prefix}-attachment"
   roles      = [aws_iam_role.role.name]
   policy_arn = aws_iam_policy.policy.arn
 }

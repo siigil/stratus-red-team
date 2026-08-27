@@ -10,10 +10,12 @@ description: >
 ## Overview
 
 Each attack technique is composed of two files, which should be stored in `v2/internal/attacktechniques/<platform>/<mitre-attack-tactic>/<name>` (e.g., `v2/internal/attacktechniques/aws/defense-evasion/cloudtrail-delete/`):
+
 - `main.go`, containing the imperative attack logic
 - most of the time, `main.tf` containing prerequisite infrastructure.
 
 The lifecycle of an attack technique in Stratus Red Team is:
+
 - COLD
 - WARM: The prerequisite infrastructure is ready.
 - DETONATED: The attack technique was detonated.
@@ -36,6 +38,45 @@ When **creating** a new technique, follow the workflow below step by step. When 
 #### Provider versions and configurations to use
 
 See [references/provider-configs.md](references/provider-configs.md) for the required Terraform provider blocks for each platform (AWS, Azure, Entra ID, GCP, Kubernetes).
+
+#### Concurrent detonation: use var.correlation.short in resource names
+
+A `variable "correlation"` block is **automatically injected** alongside your `main.tf` at warmup time — you do not need to declare it. It provides:
+
+- `var.correlation.id` — the full correlation UUID (used in tags/labels for signal matching)
+- `var.correlation.short` — an 8-character short form, safe to embed in resource names
+
+**Every resource with a globally or region-scoped name must embed `var.correlation.short`** so that concurrent executions of the same technique do not collide. The standard pattern is:
+
+```hcl
+locals {
+  resource_prefix = "stratus-red-team-<technique-name>-${var.correlation.short}"
+}
+
+resource "aws_iam_role" "role" {
+  name = "${local.resource_prefix}-role"
+}
+```
+
+#### Go-created detonation artifacts
+
+If the technique creates resources **in Go** (not Terraform) during `detonate`, their names must also carry the correlation short ID. Since the Go code cannot access `var.correlation.short` directly, expose it as a Terraform output and read it from `params`:
+
+```hcl
+output "warmup_short_id" {
+  value = var.correlation.short
+}
+```
+
+```go
+func detonate(params map[string]string, providers stratus.CloudProviders) error {
+    shortID := params["warmup_short_id"]
+    resourceName := fmt.Sprintf("my-technique-%s", shortID)
+    // ...
+}
+```
+
+This value is persisted at warmup and read back at detonate/revert, so it stays stable across commands even when no correlation ID is set.
 
 When you're done, format your Terraform file using:
 
@@ -81,11 +122,11 @@ If the detonation is reversible, implement a `revert` function that undoes the c
 
 #### Guideline for documentation fields
 
-* `ID` should always be of the form `platform.mitre-attack-tactic.name`, e.g. `aws.defense-evasion.cloudtrail-delete`
-* `FriendlyName` should always start with a verb, and be in the infinitive form.
-  * Bad: `S3 ransomware`, `Creates S3 ransomware`
-  * Good: `Simulate S3 ransomware`
-* `Description` should contain at least an intro sentence and a Warm-up, Detonation, References section. "References" should ideally be examples of usage/sightings of this technique in the wild, or relevant cloud provider documentation. Example:
+- `ID` should always be of the form `platform.mitre-attack-tactic.name`, e.g. `aws.defense-evasion.cloudtrail-delete`
+- `FriendlyName` should always start with a verb, and be in the infinitive form.
+  - Bad: `S3 ransomware`, `Creates S3 ransomware`
+  - Good: `Simulate S3 ransomware`
+- `Description` should contain at least an intro sentence and a Warm-up, Detonation, References section. "References" should ideally be examples of usage/sightings of this technique in the wild, or relevant cloud provider documentation. Example:
 
 ```
 Establishes persistence by creating a service account key on an existing service account.
@@ -104,7 +145,7 @@ References:
 - https://rhinosecuritylabs.com/gcp/privilege-escalation-google-cloud-platform-part-1/
 ```
 
-* `Detection` should describe how to detect this technique, including relevant CloudTrail/audit log event names and any managed detection rules (e.g. GuardDuty finding types). Use HTML for formatting since it renders in the docs. Example:
+- `Detection` should describe how to detect this technique, including relevant CloudTrail/audit log event names and any managed detection rules (e.g. GuardDuty finding types). Use HTML for formatting since it renders in the docs. Example:
 
 ```
 Identify when a CloudTrail trail is disabled, through CloudTrail's <code>StopLogging</code> event.
@@ -112,7 +153,7 @@ Identify when a CloudTrail trail is disabled, through CloudTrail's <code>StopLog
 GuardDuty also provides a dedicated finding type, <a href="https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html#stealth-iam-cloudtrailloggingdisabled">Stealth:IAMUser/CloudTrailLoggingDisabled</a>.
 ```
 
-* `IsIdempotent`: set to `true` if the detonation can be called multiple times without side effects.
+- `IsIdempotent`: set to `true` if the detonation can be called multiple times without side effects.
 
 #### Add your new Go file to the imported attack techniques
 

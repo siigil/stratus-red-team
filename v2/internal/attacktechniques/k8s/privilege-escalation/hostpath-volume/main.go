@@ -52,7 +52,7 @@ func detonate(params map[string]string, providers stratus.CloudProviders) error 
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
 	correlationID := providers.K8s().UniqueCorrelationId.String()
-	podSpec := basePodSpec(namespace, correlationID)
+	podSpec := basePodSpec(namespace, correlationID, params["warmup_short_id"])
 
 	// Apply configuration overrides (image, tolerations, nodeSelector, securityContext)
 	providers.K8s().ApplyPodConfig(techniqueID, podSpec)
@@ -71,7 +71,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	client := providers.K8s().GetClient()
 	namespace := params["namespace"]
 	correlationID := providers.K8s().UniqueCorrelationId.String()
-	podSpec := basePodSpec(namespace, correlationID)
+	podSpec := basePodSpec(namespace, correlationID, params["warmup_short_id"])
 
 	log.Println("Removing malicious pod " + podSpec.ObjectMeta.Name)
 	deleteOptions := metav1.DeleteOptions{GracePeriodSeconds: ptr.Int64(0)}
@@ -83,10 +83,14 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 	return nil
 }
 
-func basePodSpec(namespace string, correlationID string) *v1.Pod {
+func basePodSpec(namespace string, correlationID string, warmupShortID string) *v1.Pod {
+	podName := techniqueID
+	if warmupShortID != "" {
+		podName = techniqueID + "-" + warmupShortID
+	}
 	return &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      techniqueID,
+			Name:      podName,
 			Namespace: namespace,
 			Labels: map[string]string{
 				"datadoghq.com/stratus-red-team":                "true",

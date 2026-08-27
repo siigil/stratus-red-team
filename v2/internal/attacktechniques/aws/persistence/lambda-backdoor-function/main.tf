@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-backdoor-f"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-backdoor-f-${var.correlation.short}"
 }
 
 resource "aws_iam_role" "lambda" {
@@ -41,14 +41,9 @@ resource "aws_iam_role" "lambda" {
 EOF
 }
 
-resource "random_string" "suffix" {
-  length    = 10
-  min_lower = 10
-  special   = false
-}
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "${local.resource_prefix}-bucket-${random_string.suffix.result}"
+  bucket        = "${local.resource_prefix}-bucket"
   force_destroy = true
 }
 resource "aws_s3_bucket_object" "code" {

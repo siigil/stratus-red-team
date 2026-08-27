@@ -62,7 +62,7 @@ kubernetes:
 			yaml: `
 aws:
   default:
-    prefix: "team-<% .CorrelationID %>-"
+    prefix: "security-testing-"
     tags:
       Environment: test
       ExecutionID: "<% .CorrelationID %>"
@@ -159,6 +159,24 @@ kubernetes:
     "k8s.tactic.procedure":
       pod:
         img: wrong-key
+`,
+			wantError: true,
+		},
+		{
+			name: "aws-prefix-at-max-length",
+			yaml: `
+aws:
+  default:
+    prefix: "security-testing-"
+`,
+			wantError: false,
+		},
+		{
+			name: "aws-prefix-over-max-length",
+			yaml: `
+aws:
+  default:
+    prefix: "security-testing-extra"
 `,
 			wantError: true,
 		},

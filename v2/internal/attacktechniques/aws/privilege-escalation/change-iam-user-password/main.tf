@@ -17,11 +17,11 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-update-login-profile"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-chg-pwd-${var.correlation.short}"
 }
 
 resource "aws_iam_user" "legit-user" {
-  name          = "${local.resource_prefix}-user"
+  name          = "${local.resource_prefix}-usr"
   force_destroy = true
 }
 

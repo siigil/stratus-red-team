@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-leave-org"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-leave-org-${var.correlation.short}"
 }
 
 data "aws_caller_identity" "current" {}

@@ -22,11 +22,6 @@ data "azurerm_client_config" "current" {
 # Random
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-resource "random_string" "lab_name" {
-  length  = 4
-  special = false
-  upper   = false
-}
 
 resource "random_password" "password" {
   length           = 64
@@ -39,7 +34,7 @@ resource "random_password" "password" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_resource_group" "lab_environment" {
-  name     = "${local.resource_prefix}-rg-${random_string.lab_name.result}"
+  name     = "${local.resource_prefix}-rg-${var.correlation.short}"
   location = "West US"
 }
 
@@ -48,7 +43,7 @@ resource "azurerm_resource_group" "lab_environment" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_virtual_network" "lab_vnet" {
-  name                = "${local.resource_prefix}-vnet-${random_string.lab_name.result}"
+  name                = "${local.resource_prefix}-vnet-${var.correlation.short}"
   address_space       = ["10.0.0.0/24"]
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
@@ -63,14 +58,14 @@ resource "azurerm_subnet" "bastion_subnet" {
 }
 
 resource "azurerm_subnet" "lab_subnet" {
-  name                 = "${local.resource_prefix}-subnet-${random_string.lab_name.result}"
+  name                 = "${local.resource_prefix}-subnet-${var.correlation.short}"
   resource_group_name  = azurerm_resource_group.lab_environment.name
   virtual_network_name = azurerm_virtual_network.lab_vnet.name
   address_prefixes     = ["10.0.0.32/27"]
 }
 
 resource "azurerm_public_ip" "lab_pip" {
-  name                = "${local.resource_prefix}-pip-${random_string.lab_name.result}"
+  name                = "${local.resource_prefix}-pip-${var.correlation.short}"
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
   allocation_method   = "Static"
@@ -78,12 +73,12 @@ resource "azurerm_public_ip" "lab_pip" {
 }
 
 resource "azurerm_network_interface" "lab_nic" {
-  name                = "${local.resource_prefix}-nic-${random_string.lab_name.result}"
+  name                = "${local.resource_prefix}-nic-${var.correlation.short}"
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
 
   ip_configuration {
-    name                          = "${local.resource_prefix}-ip-${random_string.lab_name.result}"
+    name                          = "${local.resource_prefix}-ip-${var.correlation.short}"
     subnet_id                     = azurerm_subnet.lab_subnet.id
     private_ip_address_allocation = "Dynamic"
   }
@@ -99,7 +94,7 @@ resource "azurerm_windows_virtual_machine" "lab_windows_vm" {
   size                = "Standard_F2"
   admin_username      = "local_admin_user"
   admin_password      = random_password.password.result
-  user_data           = base64encode(random_string.lab_name.result)
+  user_data           = base64encode(var.correlation.short)
 
   network_interface_ids = [
     azurerm_network_interface.lab_nic.id,
@@ -124,7 +119,7 @@ resource "azurerm_windows_virtual_machine" "lab_windows_vm" {
 
 # Note: Creation/destruction of a Bastion can take 10 minutes each, see https://learn.microsoft.com/en-us/azure/bastion/tutorial-create-host-portal
 resource "azurerm_bastion_host" "bastion" {
-  name                = "${local.resource_prefix}-bastion-${random_string.lab_name.result}"
+  name                = "${local.resource_prefix}-bastion-${var.correlation.short}"
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
   # Required for shareable link feature
@@ -132,7 +127,7 @@ resource "azurerm_bastion_host" "bastion" {
   shareable_link_enabled = true
 
   ip_configuration {
-    name                 = "${local.resource_prefix}-ipconfig-${random_string.lab_name.result}"
+    name                 = "${local.resource_prefix}-ipconfig-${var.correlation.short}"
     subnet_id            = azurerm_subnet.bastion_subnet.id
     public_ip_address_id = azurerm_public_ip.lab_pip.id
   }

@@ -16,19 +16,14 @@ locals {
   zone            = "us-central1-a"
 }
 
-resource "random_string" "suffix" {
-  length    = 8
-  special   = false
-  min_lower = 8
-}
 
 resource "google_compute_network" "vpc" {
-  name                    = "${local.resource_prefix}-vpc-${random_string.suffix.result}"
+  name                    = "${local.resource_prefix}-vpc-${var.correlation.short}"
   auto_create_subnetworks = true
 }
 
 resource "google_compute_instance" "instance" {
-  name         = "${local.resource_prefix}-${random_string.suffix.result}"
+  name         = "${local.resource_prefix}-${var.correlation.short}"
   machine_type = "e2-micro"
   zone         = local.zone
 

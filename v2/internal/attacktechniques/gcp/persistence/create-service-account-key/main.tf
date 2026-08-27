@@ -8,11 +8,11 @@ terraform {
 }
 
 locals {
-  resource_prefix = "stratus-red-team-csak" # stratus red team create service account key
+  resource_prefix = "srt-csak" # stratus red team create service account key
 }
 
 resource "google_service_account" "service_account" {
-  account_id = format("%s-sa", local.resource_prefix)
+  account_id = format("%s-sa-%s", local.resource_prefix, var.correlation.short)
 }
 
 output "sa_email" {

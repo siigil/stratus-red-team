@@ -19,7 +19,7 @@ provider "aws" {
 
 locals {
   num_secrets     = 42
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-retrieve--batch-secret"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-retrieve--batch-secret-${var.correlation.short}"
 }
 
 resource "random_string" "secrets" {

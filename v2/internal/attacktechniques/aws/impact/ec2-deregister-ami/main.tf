@@ -17,15 +17,10 @@ provider "aws" {
   }
 }
 
-resource "random_string" "suffix" {
-  length    = 6
-  min_lower = 6
-  special   = false
-}
 
 locals {
-  resource_prefix = "stratus-red-team-deregister-ami"
-  ami_name        = format("%s-ami-%s", local.resource_prefix, random_string.suffix.result)
+  resource_prefix = "stratus-red-team-deregister-ami-${var.correlation.short}"
+  ami_name        = format("%s-ami", local.resource_prefix)
 }
 
 data "aws_availability_zones" "available" {

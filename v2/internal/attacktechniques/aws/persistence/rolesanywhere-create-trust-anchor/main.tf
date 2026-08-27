@@ -18,7 +18,7 @@ provider "aws" {
 }
 
 locals {
-  resource_prefix = "${var.config.aws.prefix}stratus-red-team-trust-anchor"
+  resource_prefix = "${var.config.aws.prefix}stratus-red-team-trust-anchor-${var.correlation.short}"
 }
 
 resource "aws_iam_role" "role" {

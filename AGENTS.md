@@ -6,6 +6,8 @@ Stratus Red Team is a CLI tool and Go library that allows you to easily detonate
 
 When you need to create or update new attack techniques, use the `create-attack-technique` skill.
 
+**All resource names must embed `var.correlation.short`** to support concurrent detonation. See the skill and [docs/dev-guide/configuration.md](docs/dev-guide/configuration.md) for details.
+
 ## Testing and developing locally
 
 To run locally:

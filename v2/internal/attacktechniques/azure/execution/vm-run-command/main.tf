@@ -19,11 +19,6 @@ locals {
 # Random
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-resource "random_string" "lab_name" {
-  length  = 4
-  special = false
-  upper   = false
-}
 
 resource "random_password" "password" {
   length           = 64
@@ -36,7 +31,7 @@ resource "random_password" "password" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_resource_group" "lab_environment" {
-  name     = "${local.resource_prefix}-rg-${random_string.lab_name.result}"
+  name     = "${local.resource_prefix}-rg-${var.correlation.short}"
   location = "West US"
 }
 
@@ -45,26 +40,26 @@ resource "azurerm_resource_group" "lab_environment" {
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 resource "azurerm_virtual_network" "lab_vnet" {
-  name                = "${local.resource_prefix}-vnet-${random_string.lab_name.result}"
+  name                = "${local.resource_prefix}-vnet-${var.correlation.short}"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
 }
 
 resource "azurerm_subnet" "lab_subnet" {
-  name                 = "${local.resource_prefix}-subnet-${random_string.lab_name.result}"
+  name                 = "${local.resource_prefix}-subnet-${var.correlation.short}"
   resource_group_name  = azurerm_resource_group.lab_environment.name
   virtual_network_name = azurerm_virtual_network.lab_vnet.name
   address_prefixes     = ["10.0.2.0/24"]
 }
 
 resource "azurerm_network_interface" "lab_nic" {
-  name                = "${local.resource_prefix}-nic-${random_string.lab_name.result}"
+  name                = "${local.resource_prefix}-nic-${var.correlation.short}"
   location            = azurerm_resource_group.lab_environment.location
   resource_group_name = azurerm_resource_group.lab_environment.name
 
   ip_configuration {
-    name                          = "${local.resource_prefix}-ip-${random_string.lab_name.result}"
+    name                          = "${local.resource_prefix}-ip-${var.correlation.short}"
     subnet_id                     = azurerm_subnet.lab_subnet.id
     private_ip_address_allocation = "Dynamic"
   }
@@ -81,7 +76,7 @@ resource "azurerm_windows_virtual_machine" "lab_windows_vm" {
   size                = "Standard_F2"
   admin_username      = "local_admin_user"
   admin_password      = random_password.password.result
-  user_data           = base64encode(random_string.lab_name.result)
+  user_data           = base64encode(var.correlation.short)
 
   network_interface_ids = [
     azurerm_network_interface.lab_nic.id,

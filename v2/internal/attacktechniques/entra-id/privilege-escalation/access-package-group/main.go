@@ -179,7 +179,7 @@ func revert(params map[string]string, providers stratus.CloudProviders) error {
 
 		select {
 		case <-waitCtx.Done():
-			return fmt.Errorf("timed out waiting for %d active access package assignment(s) to be removed: %w. Try reverting again.", len(assignments), waitCtx.Err())
+			return fmt.Errorf("timed out waiting for %d active access package assignment(s) to be removed: %w, try reverting again", len(assignments), waitCtx.Err())
 		case <-time.After(assignmentRemovalPollInterval):
 		}
 	}

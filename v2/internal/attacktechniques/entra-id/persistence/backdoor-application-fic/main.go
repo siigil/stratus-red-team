@@ -94,7 +94,7 @@ Using [Entra ID audit logs](https://learn.microsoft.com/en-us/entra/identity/mon
 
 Sample Entra ID audit log event to monitor:
 
-` + codeBlock + `json hl_lines="3 15 22"
+` + codeBlock + `json hl_lines="4 16 23"
 {
   "category": "ApplicationManagement",
   "result": "success",

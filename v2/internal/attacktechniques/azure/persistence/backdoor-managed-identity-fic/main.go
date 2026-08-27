@@ -93,7 +93,7 @@ Using [Azure Activity Logs](https://learn.microsoft.com/en-us/azure/azure-monito
 
 Sample Azure Activity Log event to monitor:
 
-` + codeBlock + `json hl_lines="2 10"
+` + codeBlock + `json hl_lines="3 11"
 {
     "operationName": {
         "value": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials/write",

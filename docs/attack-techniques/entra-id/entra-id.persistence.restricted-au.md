@@ -34,6 +34,7 @@ References:
 
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
+- https://securitylabs.datadoghq.com/articles/abusing-entra-id-administrative-units/
 
 Note: When cleaning up the technique, you might have to wait a few minutes for the user status to update before retrying the cleanup. This is a limitation of Entra ID.
 

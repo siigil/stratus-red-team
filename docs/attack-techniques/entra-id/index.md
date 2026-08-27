@@ -31,3 +31,5 @@ Note that some Stratus attack techniques may correspond to more than a single AT
   
   - [Create Application](./entra-id.persistence.new-application.md)
   
+  - [Escalate to Entra ID role-assignable group using access package](./entra-id.privilege-escalation.access-package-group.md)
+  

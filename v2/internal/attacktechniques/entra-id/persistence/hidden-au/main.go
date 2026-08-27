@@ -40,6 +40,7 @@ The backdoor user can now perform privileged operations over any user in the adm
 References:
 
 - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units
+- https://securitylabs.datadoghq.com/articles/abusing-entra-id-administrative-units/
 
 `,
 		Detection: `

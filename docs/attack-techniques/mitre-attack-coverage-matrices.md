@@ -86,7 +86,7 @@ This provides coverage matrices of MITRE ATT&CK tactics and techniques currently
 <tr><td><a href="../Entra ID/entra-id.persistence.backdoor-application-sp">Backdoor Entra ID application through service principal</a></td><td><a href="../Entra ID/entra-id.persistence.backdoor-application-sp">Backdoor Entra ID application through service principal</a></td></tr>
 <tr><td><a href="../Entra ID/entra-id.persistence.backdoor-application">Backdoor Entra ID application</a></td><td><a href="../Entra ID/entra-id.persistence.backdoor-application">Backdoor Entra ID application</a></td></tr>
 <tr><td><a href="../Entra ID/entra-id.persistence.guest-user">Create Guest User</a></td><td><a href="../Entra ID/entra-id.persistence.new-application">Create Application</a></td></tr>
-<tr><td><a href="../Entra ID/entra-id.persistence.hidden-au">Create Hidden Scoped Role Assignment Through HiddenMembership AU</a></td><td></td></tr>
+<tr><td><a href="../Entra ID/entra-id.persistence.hidden-au">Create Hidden Scoped Role Assignment Through HiddenMembership AU</a></td><td><a href="../Entra ID/entra-id.privilege-escalation.access-package-group">Escalate to Entra ID role-assignable group using access package</a></td></tr>
 <tr><td><a href="../Entra ID/entra-id.persistence.new-application">Create Application</a></td><td></td></tr>
 <tr><td><a href="../Entra ID/entra-id.persistence.restricted-au">Create Sticky Backdoor User Through Restricted Management AU</a></td><td></td></tr>
 </tbody>

@@ -77,6 +77,7 @@ This page contains the list of all Stratus Attack Techniques.
 | [Create Hidden Scoped Role Assignment Through HiddenMembership AU](./entra-id/entra-id.persistence.hidden-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
 | [Create Application](./entra-id/entra-id.persistence.new-application.md) | [Entra ID](./entra-id/index.md) | Persistence, Privilege Escalation |
 | [Create Sticky Backdoor User Through Restricted Management AU](./entra-id/entra-id.persistence.restricted-au.md) | [Entra ID](./entra-id/index.md) | Persistence |
+| [Escalate to Entra ID role-assignable group using access package](./entra-id/entra-id.privilege-escalation.access-package-group.md) | [Entra ID](./entra-id/index.md) | Privilege Escalation |
 | [Delete a Cloud DNS Logging Policy](./GCP/gcp.defense-evasion.delete-dns-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Disable Data Access Audit Logs for a GCP Service](./GCP/gcp.defense-evasion.disable-audit-logs.md) | [GCP](./GCP/index.md) | Defense Evasion |
 | [Attempt to Remove a GCP Project from its Organization](./GCP/gcp.defense-evasion.remove-project-from-organization.md) | [GCP](./GCP/index.md) | Defense Evasion |

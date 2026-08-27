@@ -1003,6 +1003,13 @@ Entra ID:
             - Privilege Escalation
           platform: Entra ID
           isIdempotent: false
+        - id: entra-id.privilege-escalation.access-package-group
+          name: Escalate to Entra ID role-assignable group using access package
+          isSlow: false
+          mitreAttackTactics:
+            - Privilege Escalation
+          platform: Entra ID
+          isIdempotent: true
 Kubernetes:
     Credential Access:
         - id: k8s.credential-access.dump-secrets
